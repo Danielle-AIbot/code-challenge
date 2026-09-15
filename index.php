@@ -1,0 +1,188 @@
+<?php
+require_once 'db.php';
+
+$profile = $pdo->query("SELECT * FROM profile LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+$experience = $pdo->query("SELECT * FROM experience ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+$education = $pdo->query("SELECT * FROM education ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
+$skills = $pdo->query("SELECT * FROM skills")->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo htmlspecialchars($profile['name']); ?> - Resume</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .top-bar {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+        .admin-link {
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .admin-link:hover { background: #444; }
+        .resume-container {
+            background: #fff;
+            width: 100%;
+            max-width: 700px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p.title { font-size: 16px; opacity: 0.9; margin-bottom: 10px; }
+        .contact-info {
+            font-size: 13px;
+            opacity: 0.85;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 14px 10px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn:hover { color: #4a90e2; background: #f1f3f5; }
+        .tab-btn.active {
+            color: #4a90e2;
+            border-bottom: 3px solid #4a90e2;
+            background: #fff;
+        }
+        .tab-content { display: none; padding: 25px 30px; }
+        .tab-content.active { display: block; }
+        h3 { font-size: 18px; margin-bottom: 15px; color: #222; border-bottom: 2px solid #f0f2f5; padding-bottom: 8px; }
+        p { line-height: 1.6; font-size: 14px; color: #555; }
+        .timeline-item {
+            margin-bottom: 20px;
+            border-left: 3px solid #4a90e2;
+            padding-left: 15px;
+        }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-item h4 { font-size: 15px; color: #333; }
+        .timeline-item span.meta { font-size: 12px; color: #777; display: block; margin: 3px 0 6px 0; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-badge {
+            background: #eef2f7;
+            color: #357abd;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="edit.php" class="admin-link">⚙️ Manage / Edit System</a>
+</div>
+
+<div class="resume-container">
+    <div class="header">
+        <h1><?php echo htmlspecialchars($profile['name']); ?></h1>
+        <p class="title"><?php echo htmlspecialchars($profile['title']); ?></p>
+        <div class="contact-info">
+            <span>📧 <?php echo htmlspecialchars($profile['email']); ?></span>
+            <span>📞 <?php echo htmlspecialchars($profile['phone']); ?></span>
+            <span>📍 <?php echo htmlspecialchars($profile['location']); ?></span>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'about')">About</button>
+        <button class="tab-btn" onclick="openTab(event, 'experience')">Experience</button>
+        <button class="tab-btn" onclick="openTab(event, 'education')">Education</button>
+        <button class="tab-btn" onclick="openTab(event, 'skills')">Skills</button>
+    </div>
+
+    <div id="about" class="tab-content active">
+        <h3>Profile Summary</h3>
+        <p><?php echo nl2br(htmlspecialchars($profile['about'])); ?></p>
+    </div>
+
+    <div id="experience" class="tab-content">
+        <h3>Work Experience</h3>
+        <?php foreach ($experience as $job): ?>
+            <div class="timeline-item">
+                <h4><?php echo htmlspecialchars($job['role']); ?> — <strong><?php echo htmlspecialchars($job['company']); ?></strong></h4>
+                <span class="meta"><?php echo htmlspecialchars($job['period']); ?></span>
+                <p><?php echo htmlspecialchars($job['description']); ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div id="education" class="tab-content">
+        <h3>Education Background</h3>
+        <?php foreach ($education as $edu): ?>
+            <div class="timeline-item">
+                <h4><?php echo htmlspecialchars($edu['degree']); ?></h4>
+                <span class="meta"><?php echo htmlspecialchars($edu['institution']); ?> | <?php echo htmlspecialchars($edu['year']); ?></span>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div id="skills" class="tab-content">
+        <h3>Technical Skills</h3>
+        <div class="skills-grid">
+            <?php foreach ($skills as $s): ?>
+                <span class="skill-badge"><?php echo htmlspecialchars($s['skill_name']); ?></span>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        let tabcontent = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+        let tablinks = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
