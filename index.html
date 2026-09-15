@@ -1,18 +1,9 @@
-<?php
-require_once 'db.php';
-
-$profile = $pdo->query("SELECT * FROM profile LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-$experience = $pdo->query("SELECT * FROM experience ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
-$education = $pdo->query("SELECT * FROM education ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
-$skills = $pdo->query("SELECT * FROM skills")->fetchAll(PDO::FETCH_ASSOC);
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($profile['name']); ?> - Resume</title>
+    <title>Jane Doe - Resume</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -115,18 +106,14 @@ $skills = $pdo->query("SELECT * FROM skills")->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-<div class="top-bar">
-    <a href="edit.php" class="admin-link">⚙️ Manage / Edit System</a>
-</div>
-
 <div class="resume-container">
     <div class="header">
-        <h1><?php echo htmlspecialchars($profile['name']); ?></h1>
-        <p class="title"><?php echo htmlspecialchars($profile['title']); ?></p>
+        <h1>Jane Doe</h1>
+        <p class="title">Full-Stack Web Developer</p>
         <div class="contact-info">
-            <span>📧 <?php echo htmlspecialchars($profile['email']); ?></span>
-            <span>📞 <?php echo htmlspecialchars($profile['phone']); ?></span>
-            <span>📍 <?php echo htmlspecialchars($profile['location']); ?></span>
+            <span>📧 jane.doe@example.com</span>
+            <span>📞 +1 (555) 019-2834</span>
+            <span>📍 San Francisco, CA</span>
         </div>
     </div>
 
@@ -139,36 +126,40 @@ $skills = $pdo->query("SELECT * FROM skills")->fetchAll(PDO::FETCH_ASSOC);
 
     <div id="about" class="tab-content active">
         <h3>Profile Summary</h3>
-        <p><?php echo nl2br(htmlspecialchars($profile['about'])); ?></p>
+        <p>Passionate software engineer with 4+ years of experience building responsive web applications using PHP, JavaScript, and SQL.</p>
     </div>
 
     <div id="experience" class="tab-content">
         <h3>Work Experience</h3>
-        <?php foreach ($experience as $job): ?>
-            <div class="timeline-item">
-                <h4><?php echo htmlspecialchars($job['role']); ?> — <strong><?php echo htmlspecialchars($job['company']); ?></strong></h4>
-                <span class="meta"><?php echo htmlspecialchars($job['period']); ?></span>
-                <p><?php echo htmlspecialchars($job['description']); ?></p>
-            </div>
-        <?php endforeach; ?>
+        <div class="timeline-item">
+            <h4>Senior PHP Developer — <strong>TechCorp Solutions</strong></h4>
+            <span class="meta">2023 - Present</span>
+            <p>Led backend development for e-commerce platforms, optimizing database queries and integrating payment gateways.</p>
+        </div>
+        <div class="timeline-item">
+            <h4>Junior Web Developer — <strong>WebCraft Agency</strong></h4>
+            <span class="meta">2021 - 2023</span>
+            <p>Built and maintained client websites using PHP, HTML, CSS, and JavaScript.</p>
+        </div>
     </div>
 
     <div id="education" class="tab-content">
         <h3>Education Background</h3>
-        <?php foreach ($education as $edu): ?>
-            <div class="timeline-item">
-                <h4><?php echo htmlspecialchars($edu['degree']); ?></h4>
-                <span class="meta"><?php echo htmlspecialchars($edu['institution']); ?> | <?php echo htmlspecialchars($edu['year']); ?></span>
-            </div>
-        <?php endforeach; ?>
+        <div class="timeline-item">
+            <h4>B.S. in Computer Science</h4>
+            <span class="meta">University of Technology | 2017 - 2021</span>
+        </div>
     </div>
 
     <div id="skills" class="tab-content">
         <h3>Technical Skills</h3>
         <div class="skills-grid">
-            <?php foreach ($skills as $s): ?>
-                <span class="skill-badge"><?php echo htmlspecialchars($s['skill_name']); ?></span>
-            <?php endforeach; ?>
+            <span class="skill-badge">PHP</span>
+            <span class="skill-badge">MySQL / SQLite</span>
+            <span class="skill-badge">JavaScript (ES6)</span>
+            <span class="skill-badge">HTML5 & CSS3</span>
+            <span class="skill-badge">Git & GitHub</span>
+            <span class="skill-badge">Tailwind CSS</span>
         </div>
     </div>
 </div>
